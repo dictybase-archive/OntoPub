@@ -1,0 +1,3 @@
+[submodule "public"]
+	path = public
+	url = ssh://<username>@<host>/<path-to-Git-repo>.git
