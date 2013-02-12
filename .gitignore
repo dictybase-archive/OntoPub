@@ -5,6 +5,10 @@
 conf
 log
 
+# Carton
+.carton/
+local/
+
 #however exclude the sample conf
 !*.sample*
 !fcgi_conf.yaml
