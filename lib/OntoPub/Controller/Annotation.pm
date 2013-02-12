@@ -11,7 +11,7 @@ use base 'OntoPub::Controller';
 
 sub index {
     my ($self) = @_;
-    my $rs     = $self->get_resultset_from_query;
+    my $rs = $self->get_resultset_from_query;
     if ( !$rs->count ) {
         $self->render('no_record');
         return;
@@ -26,7 +26,7 @@ sub index {
 
     $self->setup_synonym($row);
 
-	my $schema = $rs->result_source->schema;
+    my $schema     = $rs->result_source->schema;
     my $fcvterm_rs = $schema->resultset('Sequence::FeatureCvterm')->search(
         { 'cvterm_id' => $row->cvterm_id, 'me.is_not' => 0 },
         {   prefetch => 'feature',
@@ -36,9 +36,8 @@ sub index {
     );
 
     $self->stash(
-        'gene_count' => $fcvterm_rs->search_related( 
-            'feature', {}, { group_by => 'me.feature_id' }
-        )->count
+        'gene_count' => $fcvterm_rs->search_related( 'feature', {},
+            { group_by => 'me.feature_id' } )->count
     );
 
     my $fcvterm_negated_rs
@@ -154,10 +153,20 @@ sub get_evcode {
         { join      => 'cv' }
         )->search_related(
         'cvtermsynonym_cvterms',
-        { 'type_2.name' => { -in => [qw/EXACT RELATED/] } },
-        { join          => 'type' }
+        {   'type_2.name' => { -in => [qw/EXACT RELATED BROAD/] },
+            'cv_2.name'   => 'synonym_type'
+        },
+        { join => { type => 'cv' } }
         );
-    return $prop_rs->first->synonym_;
+    if ( $prop_rs->count > 1 ) {
+        while ( my $ev = $prop_rs->next ) {
+            next if length( $ev->synonym_ ) > 3;
+            return $ev->synonym_;
+        }
+    }
+    else {
+        return $prop_rs->first->synonym_;
+    }
 }
 
 1;    # Magic true value required at end of module
