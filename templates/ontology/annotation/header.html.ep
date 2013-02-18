@@ -37,7 +37,7 @@
     <p>
         <b>
         Use <a href="#"
-        onclick=window.open("http://amigo.geneontology.org/cgi-bin/amigo/term-details.cgi?term=<%= $full_id %>","AMIGO","800","650","center","front")>
+        onclick=window.open("http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=<%= $full_id %>","AMIGO","800","650","center","front")>
         <%= image_tag 'amigo.png', border => '0' %></a> 
         to view gene products from Dictyostelium and other species annotated to this GO term as well as to browse the gene ontology.
         </b>
